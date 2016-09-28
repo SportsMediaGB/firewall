@@ -332,7 +332,7 @@ class Firewall
     public function isBlacklisted($ip = null) {
         $list = $this->whichList($ip);
 
-        return $list !== 'whitelist' &&
+        return ($list !== 'whitelist') &&
         $list === 'blacklist';
     }
 
