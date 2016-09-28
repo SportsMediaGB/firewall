@@ -17,6 +17,7 @@ use PragmaRX\Firewall\Database\Migrator;
 use PragmaRX\Firewall\Support\SentenceBag;
 use PragmaRX\Firewall\Support\MessageSelector;
 use PragmaRX\Firewall\Repositories\DataRepository;
+use App\SportsMediaGB\GeoIP\GetRequestLocation;
 
 class Firewall
 {
@@ -117,6 +118,18 @@ class Firewall
         $this->geoIp = $geoIp;
 
         $this->setIp(null);
+    }
+
+    private function getLocation($user = null) {
+        if ($user != null) {
+            $locationGrabber = new GetRequestLocation;
+            $location = $locationGrabber->getLocation($user);
+        } else {
+            $locationGrabber = new GetRequestLocation;
+            $location = $locationGrabber->getLocation();
+        }
+
+        return $location;
     }
 
     /**
@@ -394,9 +407,8 @@ class Firewall
      * @param $ip
      */
     public function setIp($ip) {
-        $this->ip = $ip
-            ?: ($this->ip
-                ?: $this->request->getClientIp());
+        $location = $this->getLocation();
+        $this->ip = $location['ip'];
     }
 
     /**
