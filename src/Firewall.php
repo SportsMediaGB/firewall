@@ -101,8 +101,7 @@ class Firewall
         FileSystem $fileSystem,
         Request $request,
         Migrator $migrator,
-        GeoIp $geoIp,
-        GetRequestLocation $getRequestLocation
+        GeoIp $geoIp
     ) {
         $this->config = $config;
 
@@ -120,7 +119,7 @@ class Firewall
 
         $this->setIp(null);
 
-        $this->getRequestLocation = $getRequestLocation;
+        $this->getRequestLocation = new GetRequestLocation();
     }
 
     /**
