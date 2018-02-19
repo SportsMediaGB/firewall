@@ -397,7 +397,8 @@ class Firewall
      * @param $ip
      */
     public function setIp($ip) {
-        $location = $this->getRequestLocation->getLocation();
+        $locationGrabber = new GetRequestLocation;
+        $location = $locationGrabber->getLocation();
         $this->ip = $location['ip'];
     }
 
