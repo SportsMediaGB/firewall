@@ -17,7 +17,6 @@ use PragmaRX\Firewall\Database\Migrator;
 use PragmaRX\Firewall\Support\SentenceBag;
 use PragmaRX\Firewall\Support\MessageSelector;
 use PragmaRX\Firewall\Repositories\DataRepository;
-use App\SportsMediaGB\GeoIP\GetRequestLocation;
 
 class Firewall
 {
@@ -118,8 +117,6 @@ class Firewall
         $this->geoIp = $geoIp;
 
         $this->setIp(null);
-
-        $this->getRequestLocation = new GetRequestLocation();
     }
 
     /**
@@ -397,9 +394,28 @@ class Firewall
      * @param $ip
      */
     public function setIp($ip) {
-        $locationGrabber = new GetRequestLocation;
-        $location = $locationGrabber->getLocation();
-        $this->ip = $location['ip'];
+        if (isset($_SERVER['HTTP_X_REAL_IP']))
+            $ipaddress = $_SERVER['HTTP_X_REAL_IP'];
+        else if (isset($_SERVER['HTTP_CLIENT_IP']))
+            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+        else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        else if(isset($_SERVER['HTTP_X_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+        else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        else if(isset($_SERVER['HTTP_FORWARDED']))
+            $ipaddress = $_SERVER['HTTP_FORWARDED'];
+        else if(isset($_SERVER['REMOTE_ADDR']))
+            $ipaddress = $_SERVER['REMOTE_ADDR'];
+        else
+            $ipaddress = '62.255.15.122';
+
+        if ($ipaddress == '::1') {
+            $ipaddress = '62.255.15.122';
+        }
+
+        $this->ip = $ipaddress;
     }
 
     /**
